@@ -1,14 +1,14 @@
 #include "RPN.hpp"
 
-rpn::rpn() {}
+RPN::RPN() {}
 
-rpn::rpn(const rpn &cpyfrom)
+RPN::RPN(const RPN &cpyfrom)
 {
 	_stack = cpyfrom._stack;
 	// std::cout << "copy constructor has been called\n";
 }
 
-rpn &rpn::operator=(const rpn &cpyfrom)
+RPN &RPN::operator=(const RPN &cpyfrom)
 {
 	if (this != &cpyfrom)
 	{
@@ -18,9 +18,9 @@ rpn &rpn::operator=(const rpn &cpyfrom)
 	return (*this);
 }
 
-rpn::~rpn() {}
+RPN::~RPN() {}
 
-int	rpn::valid_digit(std::string token)
+int	RPN::valid_digit(const std::string &token)
 {
 	int conv = 0;
 	char c = token[0];
@@ -33,7 +33,7 @@ int	rpn::valid_digit(std::string token)
 	return conv;
 }
 
-char	rpn::valid_op(std::string token)
+char	RPN::valid_op(const std::string &token)
 {
 	char c = token[0];
 	if (token.size() > 1)
@@ -43,13 +43,13 @@ char	rpn::valid_op(std::string token)
 	return 'f';
 }
 
-void	rpn::math(char op)
+void	RPN::math(char op)
 {
-	int valr = _stack.top();
+	long valr = _stack.top();
 	_stack.pop();
-	int vall = _stack.top();
+	long vall = _stack.top();
 	_stack.pop();
-	int res = -1;
+	long res = -1;
 
 	if (op == '/' && valr == 0)
 		throw(std::logic_error("the universe will explode"));
@@ -61,10 +61,15 @@ void	rpn::math(char op)
 		res = vall * valr;
 	if (op == '/')
 		res = vall / valr;
+
+
+	if (res > INT_MAX|| res < INT_MIN)
+		throw(std::overflow_error("result bigger than int"));
+
 	_stack.push(res);
 }
 
-void	rpn::token_extract(std::string str)
+void	RPN::token_extract(const std::string &str)
 {
 	std::stringstream ss(str);
 	std::string token;

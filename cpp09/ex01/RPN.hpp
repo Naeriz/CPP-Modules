@@ -1,21 +1,24 @@
+#pragma once
+
 #include <stdexcept>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <stack>
+#include <climits>
 
-class rpn
+class RPN
 {
 	private:
-		std::stack<int> _stack;
+		std::stack<long> _stack;
 
-		int		valid_digit(std::string token);
-		char	valid_op(std::string token);
+		int		valid_digit(const std::string &token);
+		char	valid_op(const std::string &token);
 		void	math(char op);
 	public:
-		rpn();
-		rpn(const rpn &cpyfrom);
-		rpn& operator=(const rpn &cpyfrom);
-		~rpn();
-		void	token_extract(std::string str);
+		RPN();
+		RPN(const RPN &cpyfrom);
+		RPN& operator=(const RPN &cpyfrom);
+		~RPN();
+		void	token_extract(const std::string &str);
 } ;
