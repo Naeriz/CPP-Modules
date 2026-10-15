@@ -32,12 +32,12 @@ void	Bitcoin::anti_whitespace(std::string &strip)
 		strip = strip.substr(first, last - first + 1);
 }
 
-void	Bitcoin::lookup_print(float valid_val, const std::string &date, const std::string &raw_val)
+void	Bitcoin::lookup_print(double valid_val, const std::string &date, const std::string &raw_val)
 {
 	if (_db.empty())
 		throw std::runtime_error("database is empty");
 
-	std::map<std::string, float>::const_iterator it = _db.lower_bound(date); //exact or closest higher, upperbound would only do higher
+	std::map<std::string, double>::const_iterator it = _db.lower_bound(date); //exact or closest higher, upperbound would only do higher
 
     //end if date later than anything in db || date not in db
 	if (it == _db.end() || it->first != date) //end part first, it->first leads to undef behaviour cuz end is marker for "one past last element"
@@ -76,7 +76,7 @@ void	Bitcoin::parse_input(char *filename)
 			anti_whitespace(value);
 			if (!date_valid(date))
 				throw std::invalid_argument("bad input => " + date);
-			float valid_val = value_valid(value, 1); 
+			double valid_val = value_valid(value, 1); 
 			lookup_print(valid_val, date, value);
 		}
 		catch (const std::exception &e)
@@ -110,7 +110,7 @@ void	Bitcoin::parse_db()
 			throw(std::logic_error("data.csv contains malformed line"));
 		if (!date_valid(db_date))
 			throw (std::logic_error("data.csv contains malformed date"));
-		float valid_val = value_valid(db_value, 0);
+		double valid_val = value_valid(db_value, 0);
 		_db[db_date] = valid_val;
 	}
 	//db.close(); not needed
@@ -127,14 +127,14 @@ int 	Bitcoin::month_leap_check(int month, int year)
 	if (month == 2 && leap == true)
 		days[2] = 29;
 
-	return (days[month]);
+	return days[month];
 }
 
 bool	Bitcoin::date_valid(const std::string &date) //stuck to	bool cuz same error msg unlike value
 {
-	int year;
-	int month;
-	int day;
+	int year = 0;
+	int month = 0;
+	int day = 0;
 
 	if (date.length() != 10 || date[4] != '-' || date[7] != '-')
 		return false;
@@ -157,7 +157,7 @@ bool	Bitcoin::date_valid(const std::string &date) //stuck to	bool cuz same error
 	return true;
 }
 
-float	Bitcoin::value_valid(std::string value, int which)
+double	Bitcoin::value_valid(std::string value, int which)
 {
 	char* endp;
 
@@ -167,18 +167,20 @@ float	Bitcoin::value_valid(std::string value, int which)
 		throw(std::invalid_argument("not a positive number"));
 
 	if (which == 1)
+	{
 		if (value[value.size() - 1] == 'f')
 		{
 			if (value.size() == 1)
 				throw(std::invalid_argument("bad value: " + value));
 			value = value.substr(0, value.size() - 1);
 		}
+	}
 
 	if (value.find_first_not_of("0123456789.") != std::string::npos)
 		throw(std::invalid_argument("bad value => " + value));
 	if (std::count(value.begin(), value.end(), '.') > 1 || value[0] == '.' || value[value.size() - 1] == '.')
 		throw(std::invalid_argument("bad value => " + value));	
-	float res = std::strtof(value.c_str(), &endp);
+	double res = std::strtod(value.c_str(), &endp);
 
 	if (endp == value.c_str() || *endp != '\0') //no conversion || trailing garbage. kept as safety net
 		throw(std::invalid_argument("value contains invalid characters"));
@@ -188,5 +190,5 @@ float	Bitcoin::value_valid(std::string value, int which)
 		if (res > 1000)
 			throw(std::invalid_argument("too large a number"));
 	}
-	return (res);
+	return res;
 }

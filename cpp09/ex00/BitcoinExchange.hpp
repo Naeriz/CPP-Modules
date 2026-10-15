@@ -12,13 +12,13 @@
 class Bitcoin
 {
 	private:
-		std::map<std::string, float>	_db;
+		std::map<std::string, double>	_db;
 
 		void 	anti_whitespace(std::string &strip);
 		bool	date_valid(const std::string &date);
 		int		month_leap_check(int month, int year);
-		float	value_valid(std::string value, int which);
-		void	lookup_print(float valid_val, const std::string &date, const std::string &raw_val);
+		double	value_valid(std::string value, int which);
+		void	lookup_print(double valid_val, const std::string &date, const std::string &raw_val);
 	
 	public:
 		Bitcoin();
