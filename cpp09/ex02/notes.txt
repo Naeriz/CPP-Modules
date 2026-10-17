@@ -1,0 +1,22 @@
+
+logic flow:
+
+1.checks
+-not empty/ 0args error
+-if 1 number print
+-if min 2 enter loop
+-empty string check
+-no signs, digits only to simplify
+-checking for whitespace within the digitblock
+-int max check
+
+2. pairing
+2.1 pair up the input (3 5 9 7 4 1 8 2) -> (3,5) (9,7) (4, 1) (8, 2)
+2.2 winners (bigger) stay in container, losers wait
+	-> winners [5 9 7 8] and losers [3 7 1 2]
+2.3 recursive sort winners with this same algo -> 4 5 8 9
+
+
+
+notes:
+if 1 number leftover: double loser: doesnt take part in recursion, gets added like a loser but last
