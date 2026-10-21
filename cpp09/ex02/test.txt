@@ -1,3 +1,35 @@
 ./PmergeMe 3 5 9 7 4
 ./PmergeMe "-1" "2"
 ./PmergeMe 3 abc 5
+./PmergeMe 3 5 9 7 4 1 8 2
+./PmergeMe 5
+./PmergeMe 7 7 7 1 1
+
+should work
+./PmergeMe 5                  # After: 5
+./PmergeMe 0                  # 0 is allowed
+./PmergeMe 7 7 7 1 1          # After: 1 1 7 7 7
+./PmergeMe 2147483647 0 1     # INT_MAX is valid
+./PmergeMe 3 5 9 7 4          # After: 3 4 5 7 9
+
+errors
+./PmergeMe
+./PmergeMe ""
+./PmergeMe -1 2
+./PmergeMe +5
+./PmergeMe 12a
+./PmergeMe "1 2"
+./PmergeMe 2147483648
+./PmergeMe 99999999999999999999
+./PmergeMe 3 abc 5
+
+
+./PmergeMe $(shuf -i 1-100000 -n 3000 | tr "\n" " ") > out.txt
+grep '^Before:' out.txt | cut -d' ' -f2- | tr ' ' '\n' | sort -n > expected.txt
+grep '^After:'  out.txt | cut -d' ' -f2- | tr ' ' '\n' > after.txt
+diff expected.txt after.txt && echo OK
+
+to showcase gap of deque and vector optimized:
+//O2 tells compiler to rewrite my code to run faster
+c++ -Wall -Wextra -Werror -std=c++98 -O2 *.cpp -o PmergeMe_02
+./PmergeMe_02 $(shuf -i 1-100000 -n 3000) | tail -2
